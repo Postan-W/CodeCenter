@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试1</title>
+</head>
+<body>
+<form action="" method="post">
+    账号:
+    <br>
+    <input type="text" name="name" value={{ data }}>
+    <br>
+    密码:
+    <br>
+    <input type="password" name="password">
+    <br>
+    <input type="submit" name="submit">
+    <br>
+    {{ data2.two }}
+    <br>
+    {{ data2["two"] }}
+    <br>
+    {{ data2.two[0] }}
+    <br>
+    {{ "hello" | upper }}
+    <br>
+    {{ "hello" | title}}
+    <br>
+    {{ data2.two | double }}
+    <br>
+    {{ data3 }}
+    <br>
+    {{ data3 | safe }}
+</form>
+</body>
+</html>

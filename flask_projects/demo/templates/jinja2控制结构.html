@@ -1,0 +1,29 @@
+{% from 'macros.html' import li_macro with context%}
+<!--import 'macros.html' as fuc with context,则使用li)macro就是fuc.li_macro(...)-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jinja2控制结构</title>
+</head>
+<body>
+<!--条件语句-->
+{% if data1[0] == "FRUITS" %}
+fruits:{{ data1 }}
+{% else %}
+not fruits
+{% endif %}
+<!--for循环-->
+<ul>
+    {% for car in data2 %}
+    <li>{{ car }}</li>
+    {% endfor %}
+</ul>
+<ul>
+    {% for fruit in data1 %}
+        {{ li_macro(fruit) }}
+    {% endfor %}
+</ul>
+{% include 'books.html' %}
+</body>
+</html>

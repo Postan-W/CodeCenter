@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+<form id=1 action="" method="post">
+    {{form.hidden_tag()}}
+    {{ form.username.label }}
+    {{ form.username }}
+    <br>
+    {{ form.password.label }}
+    {{ form.password }}
+    <br>
+    {{ form.password2.label }}
+    {{ form.password2 }}
+    <br>
+    {{ form.submit }}
+
+</form>
+<form id=2 action="" method="post">
+    <!--这个元素生成一个隐藏的字段，供Flask-WTF的CSRF防护机制使用-->
+     {{form2.hidden_tag()}}
+    {{ form2.username.label }}
+    {{ form2.username }}
+    <br>
+    {{ form2.password.label }}
+    {{ form2.password }}
+    <br>
+    {{ form2.password2.label }}
+    {{ form2.password2 }}
+    <br>
+    {{ form2.submit }}
+</form>
+</body>
+</html>

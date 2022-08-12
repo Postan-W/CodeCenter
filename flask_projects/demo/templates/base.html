@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title%}{%endblock%}</title>
+    <style>
+        .nav{
+            background:#3a3a3a;
+            height:70px
+        }
+        ul{
+            overflow:hidden;
+        }
+        ul li{
+            float:left;
+            list-style:none;
+            padding:0 10px;
+            line-height:70px;
+        }
+        ul li a{
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+<div class="nav">
+    <ul>
+        <li><a href="#">INDEX</a></li>
+        <li><a href="#">QUESTION</a></li>
+    </ul>
+</div>
+{% block main %}
+{% endblock %}
+</body>
+</html>

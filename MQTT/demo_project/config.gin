@@ -1,0 +1,3 @@
+MQTTClient.host = "127.0.0.1"
+MQTTClient.port = 1883
+MQTTClient.topic = 'test'

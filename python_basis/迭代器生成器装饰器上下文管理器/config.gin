@@ -1,0 +1,4 @@
+gin_function_test.p2=10
+GinClassTest.p1 = 100
+GinClassTest.p2 = 200
+GinClassTest.p3 = 300

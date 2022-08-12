@@ -1,0 +1,26 @@
+1.该案例是把要配置的信息单独写在一个文件里(config1.conf)，然后在nginx.conf中include
+2.下面是对config1.conf中字段的解释
+upstream iwrite {
+    ip_hash;
+    server 140.210.92.15:6688 weight=3;
+    server 140.210.91.45:6689 weight=4;
+    server 210.73.216.60:6690 weight=5;
+}
+
+server {
+        listen  6688;代理者监听的端口,没有冲突的话可以任意设置
+        server_name  140.210.91.45;代理者所在的ip或域名
+        location /
+        {
+                proxy_pass http://iwrite;要代理的对象，即上面upstream定义的iwrite
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            }
+}
+例如：访问http://140.210.91.45:6688/a/b/c,因为第三台服务器的权重最大，在负载能力之内的话，最可能实际请求的是http://210.73.216.60:6690/a/b/c，
+有个细节要注意，nginx作为代理者的监听端口和nginx所在机器的其他服务的端口不要冲突。
+
+3.在nginx.conf的http域中include该文件
+4.重启nginx，systemctl restart nginx
+
