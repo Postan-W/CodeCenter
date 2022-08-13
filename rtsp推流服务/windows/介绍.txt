@@ -1,0 +1,2 @@
+与Linux类似，是使用rtsp-simple-server.exe与ffmpeg进行推流
+参考链接：https://blog.csdn.net/qq_43994782/article/details/118941373
