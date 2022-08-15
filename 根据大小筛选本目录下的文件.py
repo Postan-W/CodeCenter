@@ -38,5 +38,6 @@ def input_layer(threshold:float,root_path)->list:
 
     return targets
 
-targets = input_layer(10,"./")
-print(targets)
+# targets = input_layer(10,"./")
+# print(targets)
+print(__name__)
