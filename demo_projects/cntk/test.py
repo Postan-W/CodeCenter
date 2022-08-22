@@ -14,6 +14,7 @@ def create_reader(path, is_training, input_dim, output_dim):
     mb_source = C.io.MinibatchSource(deserial,
     randomize=is_training, max_sweeps=sweeps)
     return mb_source
+
 def main():
     print("\nBegin wheat seed classification demo\n")
     print("Using CNTK verson = " + str(C.__version__) + "\n")
@@ -77,5 +78,6 @@ def main():
     print(raw_out)
     model.save("./cntkmodel.model", format=C.ModelFormat.CNTKv2)
 # main()
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
+print(C.__version__)

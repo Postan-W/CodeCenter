@@ -6,45 +6,50 @@ import time
 import torchvision
 import torch
 import numpy as np
+import base64
 
 
-def draw_poly_area_dangerous(img, area_poly):
+def draw_poly_area(img, area_poly_list):
     """
-    画多边形危险区域的框
-    :param img_name: 检测的图片标号，用这个来对应图片的危险区域信息
-    :param img: 图片数据
-    :return: None
+    画多边形区域的框
+    :param img: numpy类型图片数据
+    :param area_poly: 区域像素坐标点数据
+    :return:
     """
-    area_poly = np.array(area_poly, np.int32)
-    cv2.polylines(img, [area_poly], isClosed=True, color=(0, 0, 255), thickness=3, lineType=cv2.LINE_AA)
+    for area_poly in area_poly_list:
+        area_poly = np.array(area_poly, np.int32)
+        cv2.polylines(img, [area_poly], isClosed=True, color=(0, 255, 0), thickness=3, lineType=cv2.LINE_AA)
 
 
-def is_poi_in_poly(pt, poly):
+def is_poi_in_poly(pt, poly_list):
     """
     判断点是否在多边形内部的 pnpoly 算法
     :param pt: 点坐标 [x,y]
     :param poly: 点多边形坐标 [[x1,y1],[x2,y2],...]
     :return: 点是否在多边形之内
     """
-    nvert = len(poly)
-    vertx = []
-    verty = []
-    testx = pt[0]
-    testy = pt[1]
-    for item in poly:
-        vertx.append(item[0])
-        verty.append(item[1])
-    j = nvert - 1
-    res = False
-    for i in range(nvert):
-        if (verty[j] - verty[i]) == 0:
+    res_list = []
+    for poly in poly_list:
+        nvert = len(poly)
+        vertx = []
+        verty = []
+        testx = pt[0]
+        testy = pt[1]
+        for item in poly:
+            vertx.append(item[0])
+            verty.append(item[1])
+        j = nvert - 1
+        res = False
+        for i in range(nvert):
+            if (verty[j] - verty[i]) == 0:
+                j = i
+                continue
+            x = (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]
+            if ((verty[i] > testy) != (verty[j] > testy)) and (testx < x):
+                res = not res
             j = i
-            continue
-        x = (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]
-        if ((verty[i] > testy) != (verty[j] > testy)) and (testx < x):
-            res = not res
-        j = i
-    return res
+        res_list.append(res)
+    return True if True in res_list else False
 
 
 def in_poly_area(xyxy, area_poly):
@@ -73,6 +78,31 @@ def plot_one_box(x, img, color):
     tl = round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line/font thickness
     c1, c2 = (int(x[0]), int(x[1])), (int(x[2]), int(x[3]))
     cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
+
+
+def str_to_np(img_str):
+    """
+    将图片流转换为numpy数组
+    :param img_str: base64编码图片
+    :return: np.array图片
+    """
+    img_decode = base64.b64decode(img_str)  # base64解码
+    img_np = np.frombuffer(img_decode, np.uint8)  # 从str数据读取为np.array形式
+    img = cv2.imdecode(img_np, cv2.COLOR_RGB2BGR)  # 转为OpenCV形式
+
+    return img
+
+
+def np_to_str(image_np):
+    """
+    将numpy格式图片转换为流文件
+    :param image_np:numpy数组
+    :return:
+    """
+    retval, buffer = cv2.imencode('.jpg', image_np)
+    pic_str = base64.b64encode(buffer)
+    pic_str = pic_str.decode()
+    return pic_str
 
 
 def xywh2xyxy(x):
@@ -224,35 +254,54 @@ def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):
     clip_coords(coords, img0_shape)
     return coords
 
-
-def letterbox(img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleFill=False, scaleup=True):
-    # Resize image to a 32-pixel-multiple rectangle https://github.com/ultralytics/yolov3/issues/232
-    shape = img.shape[:2]  # current shape [height, width]
+#letterbox目的是将长和宽使用相同比率缩放以避免失真，"空出来"的部分用灰色填充。最终新的尺寸为正方形
+def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleFill=False, scaleup=True, stride=32):
+    '''
+    :param im: 原图 hwc
+    :param new_shape:缩放后的尺寸
+    :param color: pad的颜色（灰色边框，补齐调整后的区域）
+    :param auto:True 保证缩放后的图片保持原图的比例 即 将原图最长边缩放到指定大小，再将原图较短边按原图比例缩放，padding值经过取余操作（不会失真）
+                  False 将原图最长边缩放到指定大小，再将原图较短边按原图比例缩放,最后将较短边两边pad操作缩放到最长边大小,也是新尺寸的大小（不会失真）
+    :param scaleFill:True 简单粗暴的将原图resize到指定的大小，没有pad操作（失真）
+    :param scaleup:True  这种情形下如果原图长宽都比新尺寸小，那么r就大于1，即scale up
+                   False 对于大于new_shape的原图进行缩放,小于的不变
+    :param stride: 模型下采样次数的2的次方，这个涉及感受野的问题，在YOLOV5中下采样次数为5，则stride为32
+    :return:
+    '''
+    # Resize and pad image while meeting stride-multiple constraints
+    shape = im.shape[:2]  # current shape [height, width]
     if isinstance(new_shape, int):
         new_shape = (new_shape, new_shape)
 
-    # Scale ratio (new / old)
+    #Scale ratio (new / old)
+    print("h的比率为:{}".format(new_shape[0] / shape[0]))
+    print("w的比率为:{}".format(new_shape[1] / shape[1]))
     r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
-    if not scaleup:  # only scale down, do not scale up (for better test mAP)
+    if not scaleup:  # only scale down, do not scale up (for better val mAP)
         r = min(r, 1.0)
 
     # Compute padding
-    ratio = r, r  # width, height ratios
+    ratio = r, r #width, height ratios
     new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
-    dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]  # wh padding
+    dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]#wh要填充的量，当然了，放缩比小的那个为0
+    print("dh的值是:{},dw的值是:{}".format(dh,dw))
+
     if auto:  # minimum rectangle
-        dw, dh = np.mod(dw, 32), np.mod(dh, 32)  # wh padding
+        #对dw或dh取余是因为a % b = 0;((a -c) % b + c) % b)=((a%b - c%b)%b + c) % b = (c - c%b)%b=(c%b - c%b%b)%b=0,即取余后加上原图尺寸后仍然可以被stride整除
+        dw, dh = np.mod(dw, stride), np.mod(dh, stride)  #wh padding
     elif scaleFill:  # stretch
         dw, dh = 0.0, 0.0
         new_unpad = (new_shape[1], new_shape[0])
-        ratio = new_shape[1] / shape[1], new_shape[0] / shape[0]  # width, height ratios
+        ratio = new_shape[1] / shape[1], new_shape[0] / shape[0]#width, height ratios
 
     dw /= 2  # divide padding into 2 sides
     dh /= 2
 
     if shape[::-1] != new_unpad:  # resize
-        img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LINEAR)
+        #注意resize的第二个参数是(w,h)
+        im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
+    #round(x)的机制是四舍(包含5)五入。结合上面的除以2操作，可知下面的四个边的值的含义
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-    img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
-    return img, ratio, (dw, dh)
+    im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
+    return im, ratio, (dw, dh),new_unpad
