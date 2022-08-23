@@ -1,9 +1,7 @@
 import numpy as np
-t = (128,746)
-print(round(-0.5))
-print(640 % 32)
-a = 640
-c = 428
-b = 32
-
-print(((a -c) % b + c) % b)
+arr = np.arange(30)
+print(arr)
+arr1 = arr.reshape((5,2,3))
+print(arr1)
+arr2 = arr1.transpose((2,0,1))
+print(arr2,arr2.shape)

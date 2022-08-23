@@ -22,3 +22,4 @@ rtsp推流服务/linux/rtsp-simple-server
 rtsp推流服务/linux/rtsp-simple-server.yml
 rtsp推流服务/linux/ffmpeg
 rtsp推流服务/linux/ffprobe
+demo_projects/temp/*
