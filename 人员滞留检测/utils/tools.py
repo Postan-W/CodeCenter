@@ -233,6 +233,7 @@ def non_max_suppression(prediction, conf_thres=0.25, iou_thres=0.45, classes=Non
 
 def clip_coords(boxes, img_shape):
     # Clip bounding xyxy bounding boxes to image shape (height, width)
+    #clamp和clamp_,前者是返回新tensor，后者是更新本tensor。因为预测框的坐标值可能会超出图像，限定其值(这里是缩放后的)在图片hw范围内
     boxes[:, 0].clamp_(0, img_shape[1])  # x1
     boxes[:, 1].clamp_(0, img_shape[0])  # y1
     boxes[:, 2].clamp_(0, img_shape[1])  # x2
@@ -242,12 +243,15 @@ def clip_coords(boxes, img_shape):
 def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):
     # Rescale coords (xyxy) from img1_shape to img0_shape
     if ratio_pad is None:  # calculate from img0_shape
+        #在letterbox中取的是目标尺寸和原尺寸比小的那个r，可以知道这里的gain又重新得到了那个r。gain的两个元素值一个等于r,一个大于等于r(因为原图小边乘以r后经过padding，这里再除以原图该边，故>=r)
         gain = min(img1_shape[0] / img0_shape[0], img1_shape[1] / img0_shape[1])  # gain  = old / new
-        pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (img1_shape[0] - img0_shape[0] * gain) / 2  # wh padding
+        #下面的操作的结果，一个是0，一个是当时在letterbox中一侧的padding值
+        pad = (img1_shape[1] - img0_shape[1] * gain) / 2, (img1_shape[0] - img0_shape[0] * gain) / 2
     else:
         gain = ratio_pad[0][0]
         pad = ratio_pad[1]
 
+    #只要减去top或者left的padding值，就得到了在缩放后的图像中的目标位置，然后再除以缩放率得到在原图中的位置值
     coords[:, [0, 2]] -= pad[0]  # x padding
     coords[:, [1, 3]] -= pad[1]  # y padding
     coords[:, :4] /= gain
@@ -300,7 +304,7 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleF
     if shape[::-1] != new_unpad:  # resize
         #注意resize的第二个参数是(w,h)
         im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
-    #round(x)的机制是四舍(包含5)五入。结合上面的除以2操作，可知下面的四个边的值的含义
+    #round(x)的机制是四舍(包含5)五入。结合上面的除以2操作，可知下面的四个边的值的含义。top和left减去0.1和不减效果一样
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
     im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border

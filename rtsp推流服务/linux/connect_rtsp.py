@@ -6,4 +6,5 @@ cap = cv2.VideoCapture(rtsp_uri)
 cap.set(cv2.CAP_PROP_POS_FRAMES, 25)
 if cap.isOpened():
     print(rtsp_uri,"连接成功")
+cap.release()
 # print(cap.read())

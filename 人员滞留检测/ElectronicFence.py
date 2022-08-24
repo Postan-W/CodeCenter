@@ -26,9 +26,21 @@ class ElectronicFence(object):
         self.img_size = 640
 
         # Get names and colors
+        """
+        这里列出所有的name:
+        ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 
+        'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 
+        'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 
+        'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle',
+         'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot',
+          'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 
+          'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator',
+           'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
+        """
         self.names = self.model.module.names if hasattr(self.model, 'module') else self.model.names
         # self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in self.names]
-        self.label = ["person", "car", "truck", "bicycle", "motorbike"]
+        # self.label = ["person", "car", "truck", "bicycle", "motorbike"]#这里面定义要检测的目标类型
+        self.label = ["person"]
 
     def inference(self, image):
         # Run inference
@@ -37,7 +49,6 @@ class ElectronicFence(object):
 
         # Padded resize
         img = letterbox(image, new_shape=self.img_size)[0]
-        print("letterbox后的输出数据类型是:{}".format(type(img)))
         # Convert
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, and hwc to chw
         img = np.ascontiguousarray(img)#转为元素内存连续数组，使得下游计算更快
@@ -46,11 +57,10 @@ class ElectronicFence(object):
         img = img.half() if self.half else img.float()#uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
         if img.ndimension() == 3:
-            img = img.unsqueeze(0)
+            img = img.unsqueeze(0) #在0处插入一维，即batch维
 
         # Inference
         pred = self.model(img, augment=False)[0]
-
         # Apply NMS
         pred = non_max_suppression(pred, self.confthre, self.nmsthre, classes=None, agnostic=False)
 
@@ -63,8 +73,8 @@ class ElectronicFence(object):
         for i, det in enumerate(pred):  # detections per image
             if len(det):
                 # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], image.shape).round()
-                for *xyxy, conf, cls in reversed(det):
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4],image.shape).round()#round即将小数舍入为整数
+                for *xyxy, conf, cls in reversed(det):#原始输出的每个框置信度是从高到低排列的，这里是把置信度从低到高排列
                     if self.names[int(cls)] in self.label:
                         if in_poly_area(xyxy, area_point_list):
                             alarm = True
