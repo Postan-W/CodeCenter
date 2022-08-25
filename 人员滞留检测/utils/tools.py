@@ -21,13 +21,40 @@ def draw_poly_area(img, area_poly_list):
         cv2.polylines(img, [area_poly], isClosed=True, color=(0, 255, 0), thickness=3, lineType=cv2.LINE_AA)
 
 
+def is_pt_in_poly_single_region(pt, poly):
+    '''判断点是否在多边形内部的(pnpoly 算法)
+    '''
+    nvert = len(poly)
+    vertx = []
+    verty = []
+    testx = pt[0]
+    testy = pt[1]
+    for item in poly:
+        vertx.append(item[0])
+        verty.append(item[1])
+
+    j = nvert - 1
+    res = False
+    for i in range(nvert):
+        if (verty[j] - verty[i]) == 0:
+            j = i
+            continue
+        x = (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]
+        if ((verty[i] > testy) != (verty[j] > testy)) and (testx < x):
+            res = not res
+        j = i
+    return res
+
 def is_poi_in_poly(pt, poly_list):
     """
-    判断点是否在多边形内部的 pnpoly 算法
+    判断点是否在多边形内部的 pnpoly 算法，从一个目标点引出一条射线(任意一条射线)，统计这条射线与对变形的交点个数。如果有奇数个交点，则说明目标点在多边形内，
+    若为偶数(0也算)个交点，则在外。
+    本代码实现的算法是目标点向右引出的一条射线。
     :param pt: 点坐标 [x,y]
-    :param poly: 点多边形坐标 [[x1,y1],[x2,y2],...]
+    :param poly: 点多边形坐标 [[[x1,y1],[x2,y2],...],[[x1,y1],[x2,y2],...]...]
     :return: 点是否在多边形之内
     """
+    #注意，这里是多个多边形区域
     res_list = []
     for poly in poly_list:
         nvert = len(poly)
@@ -38,18 +65,20 @@ def is_poi_in_poly(pt, poly_list):
         for item in poly:
             vertx.append(item[0])
             verty.append(item[1])
-        j = nvert - 1
+        j = nvert - 1#下面的for语句，第一次循环1选择最后一个点作为比较点
         res = False
-        for i in range(nvert):
+        for i in range(nvert):#遍历n-1个点
+            #第一次for循环使用最后一个点
             if (verty[j] - verty[i]) == 0:
                 j = i
                 continue
+            #通过画图可以很容易明白，下面公式即得到从(testx,testy)向右引出的水平射线和两点连线的交点的x坐标值
             x = (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]
             if ((verty[i] > testy) != (verty[j] > testy)) and (testx < x):
-                res = not res
-            j = i
+                res = not res#奇数次为True，偶数次为False
+            j = i#下次循环时形成下一条边
         res_list.append(res)
-    return True if True in res_list else False
+    return True in res_list#有一个区域中包含该点即视为区域入侵
 
 
 def in_poly_area(xyxy, area_poly):
