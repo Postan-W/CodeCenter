@@ -7,6 +7,7 @@ shape = img.shape
 #定义左上与右下点
 up_left,down_right = (round(shape[1]*0.3),round(shape[0]*0.2)),(round(shape[1]*0.7),round(shape[0]*0.8))
 cut_out = img[up_left[1]:down_right[1],up_left[0]:down_right[0]]
+# cv2.imwrite("target.jpeg",cut_out)
 cv2.imshow("cut_out",cut_out)
 cv2.waitKey(0)
 #框出目标

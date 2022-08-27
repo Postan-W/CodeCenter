@@ -8,6 +8,7 @@ import numpy as np
 from utils.tools import letterbox, non_max_suppression, scale_coords, in_poly_area, plot_one_box, np_to_str, draw_poly_area
 
 
+#本类中所有函数的代码都是基于一张图片的推理
 class ElectronicFence(object):
     """
     电子围栏
@@ -56,8 +57,8 @@ class ElectronicFence(object):
         img = torch.from_numpy(img).to(self.device)
         img = img.half() if self.half else img.float()#uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        if img.ndimension() == 3:
-            img = img.unsqueeze(0) #在0处插入一维，即batch维
+        #从上面的操作中可以看出传入inference的image是单张图片的numpy数组，下面补充batch维度
+        img = img.unsqueeze(0) #在0处插入一维，即batch维
 
         # Inference
         pred = self.model(img, augment=False)[0]
@@ -69,7 +70,7 @@ class ElectronicFence(object):
     def detections(self, pred, img, image, area_point_list):
         draw_poly_area(image, area_point_list)
         alarm = False
-        # Process detections
+        #虽然写作for循环，实际上只有一张图片的推理结果
         for i, det in enumerate(pred):  # detections per image
             if len(det):
                 # Rescale boxes from img_size to im0 size
@@ -79,9 +80,27 @@ class ElectronicFence(object):
                         if in_poly_area(xyxy, area_point_list):
                             alarm = True
                             plot_one_box(xyxy, image, [0, 0, 255])
+
         alarm_image = np_to_str(image)
 
         return alarm, alarm_image
+
+    def crop_the_person(self,image,area,image_name,saved_path=None):
+        if not saved_path.endswith("/"):
+            saved_path += "/"
+        predictions,img = self.inference(image)
+        count = 0
+        #虽然写作for循环，实际上只有一张图片的推理结果
+        for i, det in enumerate(predictions):
+            if len(det):#如果该图片存在检测的目标框
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], image.shape).round()
+                for *xyxy, conf, cls in reversed(det):
+                    if self.names[int(cls)] in self.label:#如果是人，就把ta裁剪出来
+                        if in_poly_area(xyxy, area):
+                            person = image[int(xyxy[1]):int(xyxy[3]),int(xyxy[0]):int(xyxy[2])]
+                            cv2.imwrite("{}{}{}.jpeg".format(saved_path,image_name,count),person)
+                            count += 1
+
 
     def get_result(self, image, area_point_list):
         pred, img = self.inference(image)

@@ -4,19 +4,12 @@ import os
 import cv2
 import numpy as np
 ef = ElectronicFence()
-img = cv2.imread("./images/2.jpeg")
-pred,img = ef.inference(img)
-print(len(pred),reversed(pred[0]))
-print(ef.names)
-print(len(ef.names))
-# im, ratio, (dw, dh),new_unpad = letterbox(img)
-# print("最终的hw的填充值是：{},{}".format(dh,dw))
-# cv2.imshow("rsource_img",img)
-# cv2.imshow("letterbox_result",im)
+image = cv2.imread("./images/2.jpeg")
+area = [[[89,437],[1949,456],[2009,1925],[69,1841]]]
+# area = np.array(area,np.int32)
+# cv2.polylines(image, area, isClosed=True, color=(0, 255, 0), thickness=3, lineType=cv2.LINE_AA)
+# cv2.namedWindow('area', 0)
+# cv2.resizeWindow('area', 1000, 800)
+# cv2.imshow("area",image)
 # cv2.waitKey(0)
-# if not os.path.exists("./images/letterbox_output.jpeg"):
-#     print("保存letterbox的输出图像")
-#     cv2.imwrite("./images/letterbox_output.jpeg",im)
-# print("letterbox输出图像的shape_hwc:{}".format(im.shape))
-# alarm,result_image = ef.get_result(img,[[[200, 230], [730, 230], [730, 680], [200, 680]]])
-# print(alarm)
+ef.crop_the_person(image,area,image_name="passagers",saved_path="./person_images")

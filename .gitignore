@@ -18,8 +18,10 @@ demo_projects/opencv_practice2/images/*
 人员滞留检测/images/*
 人员滞留检测/weights/*
 人员滞留检测/models/*
+人员滞留检测/person_images/*
 rtsp推流服务/linux/rtsp-simple-server
 rtsp推流服务/linux/rtsp-simple-server.yml
 rtsp推流服务/linux/ffmpeg
 rtsp推流服务/linux/ffprobe
 demo_projects/temp/*
+python_basis/zipfile_theme/models/*
