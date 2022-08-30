@@ -23,3 +23,5 @@ rtsp推流服务/linux/ffmpeg
 rtsp推流服务/linux/ffprobe
 demo_projects/temp/*
 python_basis/zipfile_theme/models/*
+python_basis/glob的使用/sub/*
+python_basis/glob的使用/*.txt
