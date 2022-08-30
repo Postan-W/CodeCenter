@@ -1,3 +1,4 @@
-def f1(a):
-    print("数值是:{}".format(a))
-    print("模块名称是:{}".format(__name__))
+import sys
+
+f = float("0.001")
+print(type(f),round(f,2))

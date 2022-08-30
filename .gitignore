@@ -16,8 +16,6 @@ demo_projects/opencv_practice2/videos/*
 demo_projects/opencv_practice2/images/*
 人员滞留检测/videos/*
 人员滞留检测/images/*
-人员滞留检测/weights/*
-人员滞留检测/models/*
 人员滞留检测/person_images/*
 rtsp推流服务/linux/rtsp-simple-server
 rtsp推流服务/linux/rtsp-simple-server.yml
