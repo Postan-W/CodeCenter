@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 # from models.common import *
 from models.experimental import MixConv2d, CrossConv
-from utils.autoanchor import check_anchor_order
-from utils.general import make_divisible, check_file, set_logging
-from utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, scale_img, initialize_weights, \
+from model_utils.autoanchor import check_anchor_order
+from model_utils.general import make_divisible, check_file, set_logging
+from model_utils.torch_utils import time_synchronized, fuse_conv_and_bn, model_info, scale_img, initialize_weights, \
     select_device, copy_attr
 
 try:

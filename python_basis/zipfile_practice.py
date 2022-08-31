@@ -1,5 +1,4 @@
 import zipfile
-from zipfile import ZipFile
 file_path = "C:\\Users\\15216\\Desktop\\model.zip"
 f = zipfile.ZipFile(file_path)
 print("model/model/stages/0_PipelineModel_ebd458d9026b/" in  f.namelist())#namelist包含的是每个文件或文件夹的完整路径(相对于解压的最外层目录)

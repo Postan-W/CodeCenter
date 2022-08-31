@@ -9,8 +9,8 @@ import torch.nn as nn
 from PIL import Image, ImageDraw
 import warnings
 warnings.filterwarnings("ignore")
-from utils.datasets import letterbox
-from utils.general import non_max_suppression, make_divisible, scale_coords, xyxy2xywh
+from model_utils.datasets import letterbox
+from model_utils.general import non_max_suppression, make_divisible, scale_coords, xyxy2xywh
 # from utils.plots import color_list
 
 

@@ -1,0 +1,13 @@
+app_version	ctr_1week	ctr_2day	ctr_3month	netmodel	packname	page_no	sim_neg_360_minutes	sim_neg_5_minutes	sim_neg_60_minutes	sim_pos_360_minutes	sim_pos_3month	sim_pos_5_minutes	sim_pos_60_minutes	tagSim_360min	tagSim_3month	tagSim_5min	tagSim_60min	target	geohash_2	geohash_3	geohash_4	geohash_5	news_inview	news_click
+2.1.5	0.0	0.0	0.0	o	cn.jibu.counter	-28	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	m	k	u	y	58.0	0.0
+2.2.8	0.0	0.0	0.0	g4	com.manager.helper	1	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	z	z	z	z	0.0	0.0
+2.2.6	0.0	0.0	0.0	w	com.speedcoin.cleanmaster	1	0.0	0.0	0.0	0.0	0.93	0.0	0.0	0.0	0.0	0.0	0.0	0	q	q	3	4	64.0	0.0
+2.2.3	0.0	0.0	0.0	g4	com.flash.tbox	1	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	z	z	z	z	0.0	0.0
+2.2.6	0.0	0.0	0.0	o	com.speedcoin.cleanmaster	-17	0.96	0.96	0.96	0.0	0.95	0.0	0.0	0.0	0.0	0.0	0.0	0	w	m	q	6	34.0	3.0
+2.1.3	0.0	0.0	0.0	o	com.speed.box	-7	0.94	0.95	0.95	0.0	0.92	0.0	0.0	0.0	0.0	0.0	0.0	0	z	c	c	r	19.0	2.0
+2.2.8	0.0	0.0	0.0	o	cn.jibu.counter	-3	0.93	0.93	0.93	0.0	0.95	0.0	0.0	0.0	0.0	0.0	0.0	0	k	3	n	f	127.0	65.0
+2.2.6	0.0	0.0	0.0	o	cn.jibu.counter	2	0.94	0.94	0.94	0.0	0.95	0.0	0.0	0.0	0.0	0.0	0.0	0	x	r	g	p	47.0	16.0
+2.2.7	0.0	0.0	0.0	g4	com.genius.money	2	0.0	0.0	0.0	0.0	0.96	0.0	0.0	0.0	0.0	0.0	0.0	0	w	h	h	u	30.0	0.0
+2.1.9	0.0	0.0	0.0	o	com.qknode.cleanmaster	1	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0.0	0	w	g	q	c	12.0	0.0
+2.2.7	0.0	0.0	0.0	o	com.cnode.blockchain	-4	0.95	0.91	0.95	0.94	0.94	0.89	0.94	0.0	0.0	0.0	0.0	0	x	q	v	4	479.0	30.0
+2.3.2	0.0	0.0	0.0	g4	com.cnode.blockchain	1	0.0	0.0	0.0	0.0	0.96	0.0	0.0	0.0	0.0	0.0	0.0	0	z	9	s	f	36.0	23.0

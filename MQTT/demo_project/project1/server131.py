@@ -1,7 +1,7 @@
 from paho.mqtt import client as mqtt_client
 import sys
 from main import Detector
-from utils import *
+from model_utils import *
 import json
 import random
 

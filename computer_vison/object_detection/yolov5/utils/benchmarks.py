@@ -39,8 +39,8 @@ if str(ROOT) not in sys.path:
 
 import export
 import val
-from utils import notebook_init
-from utils.general import LOGGER, print_args
+from model_utils import notebook_init
+from model_utils.general import LOGGER, print_args
 
 
 def run(weights=ROOT / 'yolov5s.pt',  # weights path

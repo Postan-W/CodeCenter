@@ -5,7 +5,7 @@
 import json
 from paho.mqtt import client as mqtt_client
 from main import Detector
-from utils import *
+from model_utils import *
 
 class MQTT(object):
     def __init__(self, broker, port, topic_sub, topic_pub, client_id_sub, client_id_pub):

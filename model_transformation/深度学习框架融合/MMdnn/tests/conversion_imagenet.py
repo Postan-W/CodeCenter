@@ -7,8 +7,8 @@ import sys
 import imp
 import numpy as np
 from mmdnn.conversion.examples.imagenet_test import TestKit
-import utils
-from utils import *
+import model_utils
+from model_utils import *
 from datetime import datetime
 
 
