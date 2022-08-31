@@ -1,2 +1,10 @@
 与Linux类似，是使用rtsp-simple-server.exe与ffmpeg进行推流
 参考链接：https://blog.csdn.net/qq_43994782/article/details/118941373
+1.直接运行rtsp-simple-server.exe
+2.推流示例
+ffmpeg -re -stream_loop -1 -i （你的文件名） -c copy -f rtsp rtsp://127.0.0.1:8554/video
+#简单对参数说明
+-re  是以流的方式读取
+-stream_loop -1   表示无限循环读取
+-i  就是输入的文件
+-f  格式化输出到哪里
