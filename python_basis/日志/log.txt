@@ -1,0 +1,11 @@
+22-09-01 14:27:45 rotating_practice.py <module> line=27 测试信息
+22-09-01 14:30:23 rotating_practice.py <module> line=29 测试信息2
+22-09-01 14:31:06 rotating_practice.py <module> line=29 测试信息3
+22-09-01 14:33:37 rotating_practice.py <module> line=29 测试信息3
+INFO 22-09-01 14:34:12 rotating_practice.py <module> line=29 测试信息3
+INFO 22-09-01 14:36:18 rotating_practice.py <module> line=29 测试信息3
+INFO 22-09-01 14:36:27 rotating_practice.py <module> line=29 测试信息3
+INFO 22-09-01 14:45:29 rotating_practice.py <module> line=29 测试信息3
+INFO 22-09-01 14:45:29 temp.py test_info line=3 这是在test中输出的
+INFO 22-09-01 15:09:45 rotating_practice.py <module> line=30 测试信息3
+INFO 22-09-01 15:11:15 rotating_practice.py <module> line=30 测试信息3

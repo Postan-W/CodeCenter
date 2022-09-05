@@ -15,8 +15,9 @@ temp/*
 topics/opencv_practice2/videos/*
 topics/opencv_practice2/images/*
 人员滞留检测/videos/*
-人员滞留检测/images/*
+人员滞留检测/temp_images/*
 人员滞留检测/person_images/*
+人员滞留检测/log_files/*
 rtsp推流服务/linux/rtsp-simple-server
 rtsp推流服务/linux/rtsp-simple-server.yml
 rtsp推流服务/linux/ffmpeg

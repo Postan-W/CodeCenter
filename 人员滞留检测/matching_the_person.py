@@ -7,7 +7,7 @@ from typing import List
 from torchvision import transforms
 
 class MatchPerson:
-    def __init__(self,em_ckpt_file,device="cuda:0"):
+    def __init__(self,em_ckpt_file,device="cuda:{}".format(",".join([str(i) for i in range(torch.cuda.device_count())]))):
         # 创建mobilenet模型并加载参数。使用该模型提取特征
         self.device = torch.device(device)
         self.em_model = MobileNetV2IFN()
@@ -97,8 +97,12 @@ class MatchPerson:
         return dist
 
     def matching_persons(self, img: np.ndarray, query_imgs: List[np.ndarray], dist_thres: float = 0.15):
-        # query 查询目标
-        # gallery 待查询列
+        """
+        :param img: 要匹配的图片
+        :param query_imgs: 与img进行匹配的图片的列表
+        :param dist_thres: 欧式距离的阈值
+        :return:
+        """
         gallery_imgs = [img]
         m, n = len(gallery_imgs), len(query_imgs)
         if m and n:
@@ -109,11 +113,19 @@ class MatchPerson:
             distmat.addmm_(_query_feats, _gallery_feats.t(), beta=1, alpha=-2).sqrt()
             distmat = distmat.cpu().numpy()  # <class 'tuple'>: (3, 12)
             targets = []#[(与img匹配的图片的index，向量距离值),]
+            targets_distances = []#保存距离
             for i, v in enumerate(distmat):#小于设定的距离则认为是同一个目标
                 if v < dist_thres:
-                    targets.append((i,v))
+                    targets.append(i)
+                    targets_distances.append(v[0])
+            #返回最相似的那张图片在query_imgs中的index
+            if len(targets) == 0:
+                return -1
+            elif len(targets) == 1:
+                return targets[0]
+            elif len(targets) > 1:
+                return np.argmax(np.array(targets_distances),axis=0)
 
-            return targets
 
 
 

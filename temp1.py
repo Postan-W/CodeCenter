@@ -1,6 +1,3 @@
-l = [[1,2,3]]
-l2 = [[4,5,6]]
-import torch
-t1 = torch.tensor(l)
-t2 = torch.tensor(l2)
-print(torch.cat((t1,t2),0))
+import numpy as np
+targets = np.array([[1,2,3,4,22,5],[6,7,8,9,10,11]])
+print(np.argmax(targets,axis=1))

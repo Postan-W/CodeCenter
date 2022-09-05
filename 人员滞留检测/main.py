@@ -1,7 +1,10 @@
-from matching_the_person import MatchPerson
-from detector import Detector
-from apscheduler.schedulers.blocking import BlockingScheduler
-
+#!/usr/bin/python
+from procession import *
+from public_logger import logger
 
 if __name__ == "__main__":
-    pass
+    dt = Detector()  # 检测
+    mp = MatchPerson(em_ckpt_file="weights/net_MobileNet_IFN.pth")  # 匹配
+    logger.info("模型加载完成")
+    blocking_scheduler(camera_task,dt,mp,start_date=start_date(2),interval=60)
+    logger.info("任务启动")

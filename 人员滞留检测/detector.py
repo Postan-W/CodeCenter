@@ -1,27 +1,15 @@
 # -*- coding: utf-8 -*-
 # 2022/08
-"""
-       这里列出所有的name:
-       ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-       'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant',
-       'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard',
-       'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle',
-        'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot',
-         'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv',
-         'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator',
-          'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
-"""
-
 import torch
 import cv2
 import numpy as np
 from model_utils.tools import letterbox, non_max_suppression, scale_coords, in_poly_area, plot_one_box, np_to_str, draw_poly_area
 import random
-
+from public_logger import logger
 #本类中所有函数的代码都是基于一张图片的推理
 #本类实现了人体检测；是否进入电子围栏的判断；目标人体截取等方法
 class Detector(object):
-    def __init__(self, device=0, model="./weights/yolobest.pt"):
+    def __init__(self, device=",".join([str(i) for i in range(torch.cuda.device_count())]), model="./weights/yolobest.pt"):
         self.device = torch.device("cuda:{}".format(device) if torch.cuda.is_available() else 'cpu')
         # 加载检测模型
         self.model = torch.load(model, map_location=self.device)['model'].float()
@@ -51,22 +39,23 @@ class Detector(object):
         pred = non_max_suppression(pred, self.confthre, self.nmsthre, classes=None, agnostic=False)#NMS筛选框
         return pred, img
 
-    def crop_the_person_out(self,image,area,image_name,person_saved_path=None,frame_saved_path=None):
+    def crop_the_person_out(self,image,area,image_name,person_saved_path=None,origin_saved_path=None):
         '''
         :param image: 原frame
         :param area: 电子围栏
         :param image_name: 后续图片保存操作中要用到的名字
         :param person_saved_path: 裁剪下来的人的保存目录
-        :param frame_saved_path: 包含上面裁剪下来的目标及预测框的frame要保存的目录
+        :param origin_saved_path: 包含上面裁剪下来的目标及预测框的frame要保存的目录
         :return:
         '''
         if not person_saved_path.endswith("/"):
             person_saved_path += "/"
-        if not frame_saved_path.endswith("/"):
-            frame_saved_path += "/"
+        if not origin_saved_path.endswith("/"):
+            origin_saved_path += "/"
 
         predictions,img = self.inference(image)
         count = 0
+        logger.info("开始检测")
         #虽然写作for循环，实际上只有一张图片的推理结果
         for i, det in enumerate(predictions):
             if len(det):#如果该图片存在检测的目标框
@@ -79,10 +68,11 @@ class Detector(object):
                             #把该人在原图上框出来
                             cv2.imwrite("{}{}_{}.jpeg".format(person_saved_path,image_name,count),person)
                             plot_one_box(xyxy, image_temp, color=(0, 255,0))
-                            cv2.imwrite("{}{}_{}.jpeg".format(frame_saved_path, image_name, count), image_temp)
+                            cv2.imwrite("{}{}_{}.jpeg".format(origin_saved_path, image_name, count), image_temp)
                             count += 1
 
 
 
 
 #area_point_list = [[[200, 230], [730, 230], [730, 680], [200, 680]]]
+

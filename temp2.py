@@ -1,3 +1,7 @@
-from temp1 import f1
-f1(5)
-print("当前模块名称是:{}".format(__name__))
+import numpy as np
+import datetime
+import os
+import time
+import shutil
+l = [np.array([1,2,3])]
+shutil.move("./person_images/time1/camera1_0.jpeg","./person_images/results")

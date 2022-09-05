@@ -1,0 +1,61 @@
+仅仅将栈信息输出到控制台是远远不够的，更为常见的是使用日志保存程序运行过程中的相关信息，如运行时间、描述信息以及错误或者异常发生时候的特定上下文信息。
+
+Python中自带的logging模块提供了日志功能，它将logger的level分为5个级别，可以通过Logger.setLevel(lvl)来设置，其中DEBUG为最低级别，CRITICAL为最高级别. 默认的级别为WARNING。
+
+
+
+logging lib包含以下4个主要对象：
+
+(1) logger
+
+logger是程序信息输出的接口，它分散在不同的代码中使得程序可以在运行的时候记录相应的信息.并根据设置的日志级别或filter来决定哪些信息需要输出，并将这些信息分发到其关联的handler。
+
+常用的方法有Logger.setLevel()、 Logger.addHandler()、Logger.removeHandler()、Logger.addFilter()、Logger.debug()、 Logger.info()、Logger.warning()、Logger.error()、 etLogger()等。
+
+(2)Handler
+
+Handler用来处理信息的输出，可以将信息输出到控制台、文件或者网络。可以通过 Logger.addHandler()来给logger对象添加 handler,常用的handler有StreamHandler和FileHandler类。StreamHandler发送错误信息到流，而FileHandler类用于向文件输出日志信息，这两个handler定义在logging的核心模块中c其他的handler定义在logging.handles 模块中，如 HTTPHandler、SocketHandler。
+
+(3) Formatter
+
+决定log信息的格式，格式使用类似于%()s的形式来定义，如'%(asctime)s - %(levelname)s - %(message)s'支持的key可以在Python自带的文档 LogRecord attributes 中査看
+
+(4) Filter
+
+用来决定哪些信息需要输出。可以被handler和logger使用，支持层次关系，比如，如果设置了 filter名称为A.B的logger,则该logger和其子logger的信息会被输出， 如 A.B.、A.B.C.
+
+logging.basicConfig([**kwargs])提供对日志系统的基本配置，默认使用StreamHandler和Fonnatter并添加到root logger,字典参数如下所示。
+
+
+
+我们通过修改上面的例子来看如何结合traceback和logging,记录程序运行过程中的异常。
+
+
+
+修改程序后在控制台上对用户仅显示错误提示信息"Sorry，Exception occured,you accessed an element out of range"，而开发人员如果需要debug可以在日志文件中找到具体运行过程中的信息。
+
+上面的代码中控制运行输岀到console上用的是print()，但这种方法比较原始，logging模块提供了能够同时控制输出到console和文件的方法。
+
+下面的例子中通过添加StreamHandler并设置日志级别为logging.ERROR,可以在控制台上输出错误信息。
+
+
+
+为了使Logging使用更为简单可控，logging支持loggin.config进行配置，支持dictConfig和fileConfig两种形式，其中fileConfig是基于configparser()函数进行解析，必须包含的内容为[loggers]、[handlers]和[formatters]。具体例子示意如下：
+
+
+
+最后关于logging的使用，提以下几点建议：
+
+(1)尽量为logging取一个名字而不是采用默认，这样当在不同的模块中使用的时候，其他模块只需要使用以下代码就可以方便地使用同一个logger.因为它本质上符合单例模式。
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+
+(2)为了方便地找出问题所在，logging的名字建议以模块或者class来命名。
+
+Logging名称遵循按"."划分的继承规则，根是root logger, logger a.b的父logger对象为a。
+
+(3)Logging R是线程安全的，不支持多进程写入同一个日子文件，因此对于多个进程，需要配置不同的日志文件。

@@ -1,26 +1,22 @@
-"""
-日志回滚的意思是：
-假设日志文件是log2.txt，maxBytes设置的是1*1024，就是1M.当该文件到达1M大小时，会把该文件以名称log2.txt.1保存,
-然后新建一个log2.txt文件用来保存接下来的日志信息，
-以此类推。而backupCount参数就限定了最多有多少个这样的"备份文件"。
-如本模块例子所示，当达到10个备份的时候，再写日志，如果log2.txt装不下了，那么就不会往文件里写信息
-"""
+#日志级别等级CRITICAL > ERROR > WARNING > INFO > DEBUG。默认为WARNING，可以显示设定level，级别比level小的日志不会产生。
+
 import logging
 from logging.handlers import RotatingFileHandler
-logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.INFO)
-formatter = logging.Formatter('time=%(asctime)s || filename=%(filename)s || function=%(funcName)s || line=%(lineno)d || information=%(message)s',datefmt="%y-%m-%d %H:%M:%S")
+#给logger取一个名字，这样其他模块中使用getLogger可以获取这个logger。当然也可以直接导入这个logger对象。
+logger = logging.getLogger("mingzhu")
+logger.setLevel(level=logging.INFO)#比level级别小的日志不会产生
+formatter = logging.Formatter('%(levelname)s %(asctime)s %(filename)s %(funcName)s line=%(lineno)d %(message)s',datefmt="%y-%m-%d %H:%M:%S")
 
-# 定义一个RotatingFileHandler，最多备份3个日志文件，每个日志文件最大1M
-rHandler = RotatingFileHandler("log.txt", maxBytes=1*1024 , backupCount=10)
-rHandler.setLevel(logging.INFO)
-rHandler.setFormatter(formatter)
+# 定义一个RotatingFileHandler，最多备份10个日志文件(超过10个就把最老的删掉，添加新的)，每个日志文件最大1M
+file_handler = RotatingFileHandler("log.txt", maxBytes=1*1024 , backupCount=10)
+file_handler.setLevel(logging.INFO)#比该level小的日志不会写到文件里
+file_handler.setFormatter(formatter)
 
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.INFO)#比该级别小的日志不会打印到控制台
 console.setFormatter(formatter)
 
-logger.addHandler(rHandler)
+logger.addHandler(file_handler)
 logger.addHandler(console)
 
 def output_info():
@@ -30,3 +26,5 @@ def output_info():
     logger.info("fourth log information")
     logger.info("fifth log information")
     logger.info("sixth log information")
+
+logger.info("logger本身设置level相当于限制产生与否;handler设置level相当于过滤")
