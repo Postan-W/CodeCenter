@@ -95,8 +95,8 @@ class MatchPerson:
         # clamp()函数可以限定dist内元素的最大最小范围，dist最后开方，得到样本之间的距离矩阵
         dist = dist.clamp(min=1e-12).sqrt() #开方
         return dist
-
-    def matching_persons(self, img: np.ndarray, query_imgs: List[np.ndarray], dist_thres: float = 0.15):
+    #经测试dist_thres为0.08时图片目测相似度70-80%
+    def matching_persons(self, img: np.ndarray, query_imgs: List[np.ndarray], dist_thres: float = 0.2):
         """
         :param img: 要匹配的图片
         :param query_imgs: 与img进行匹配的图片的列表
@@ -120,11 +120,10 @@ class MatchPerson:
                     targets_distances.append(v[0])
             #返回最相似的那张图片在query_imgs中的index
             if len(targets) == 0:
-                return -1
-            elif len(targets) == 1:
-                return targets[0]
-            elif len(targets) > 1:
-                return np.argmax(np.array(targets_distances),axis=0)
+                return -1,100,[]
+            elif len(targets) >= 1:
+                most_likely_index = targets[np.argmin(np.array(targets_distances),axis=0)]
+                return most_likely_index,targets_distances[np.argmin(np.array(targets_distances),axis=0)],targets
 
 
 

@@ -2,6 +2,7 @@
 # 2022/08
 import torch
 import cv2
+import os
 import numpy as np
 from model_utils.tools import letterbox, non_max_suppression, scale_coords, in_poly_area, plot_one_box, np_to_str, draw_poly_area
 import random
@@ -39,23 +40,16 @@ class Detector(object):
         pred = non_max_suppression(pred, self.confthre, self.nmsthre, classes=None, agnostic=False)#NMS筛选框
         return pred, img
 
-    def crop_the_person_out(self,image,area,image_name,person_saved_path=None,origin_saved_path=None):
+    def crop_the_person_out(self,image,area,camera_name,time_point,saved_path="./person_images/detections/"):
         '''
-        :param image: 原frame
-        :param area: 电子围栏
-        :param image_name: 后续图片保存操作中要用到的名字
-        :param person_saved_path: 裁剪下来的人的保存目录
-        :param origin_saved_path: 包含上面裁剪下来的目标及预测框的frame要保存的目录
+        :param image: 从rtsp流中取到的图片
+        :param area: 检测区域[[[x1,y1],[x2,y2]...]...]
+        :param camera_name: 摄像头名称
+        :param time_point: 检测时间点
         :return:
         '''
-        if not person_saved_path.endswith("/"):
-            person_saved_path += "/"
-        if not origin_saved_path.endswith("/"):
-            origin_saved_path += "/"
-
         predictions,img = self.inference(image)
         count = 0
-        logger.info("开始检测")
         #虽然写作for循环，实际上只有一张图片的推理结果
         for i, det in enumerate(predictions):
             if len(det):#如果该图片存在检测的目标框
@@ -66,9 +60,9 @@ class Detector(object):
                             image_temp = image.copy()#这样做是为了避免不同目标的框在同一张图上出现
                             person = image_temp[int(xyxy[1]):int(xyxy[3]),int(xyxy[0]):int(xyxy[2])]
                             #把该人在原图上框出来
-                            cv2.imwrite("{}{}_{}.jpeg".format(person_saved_path,image_name,count),person)
+                            cv2.imwrite(os.path.join(saved_path,"{}_{}_{}.jpeg".format(camera_name,time_point,count)),person)
                             plot_one_box(xyxy, image_temp, color=(0, 255,0))
-                            cv2.imwrite("{}{}_{}.jpeg".format(origin_saved_path, image_name, count), image_temp)
+                            cv2.imwrite(os.path.join(saved_path,"{}_origin{}_{}.jpeg".format(camera_name,time_point,count)),image_temp)
                             count += 1
 
 
