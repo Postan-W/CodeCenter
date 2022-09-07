@@ -307,8 +307,8 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleF
         new_shape = (new_shape, new_shape)
 
     #Scale ratio (new / old)
-    print("h的比率为:{}".format(new_shape[0] / shape[0]))
-    print("w的比率为:{}".format(new_shape[1] / shape[1]))
+    # print("h的比率为:{}".format(new_shape[0] / shape[0]))
+    # print("w的比率为:{}".format(new_shape[1] / shape[1]))
     r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
     if not scaleup:  # only scale down, do not scale up (for better val mAP)
         r = min(r, 1.0)
@@ -317,7 +317,7 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleF
     ratio = r, r #width, height ratios
     new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
     dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]#wh要填充的量，当然了，放缩比小的那个为0
-    print("dh的值是:{},dw的值是:{}".format(dh,dw))
+    # print("dh的值是:{},dw的值是:{}".format(dh,dw))
 
     if auto:  # minimum rectangle
         #对dw或dh取余是因为a % b = 0;((a -c) % b + c) % b)=((a%b - c%b)%b + c) % b = (c - c%b)%b=(c%b - c%b%b)%b=0,即取余后加上原图尺寸后仍然可以被stride整除

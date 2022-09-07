@@ -147,7 +147,7 @@ def do_matching(camera_name,mp:MatchPerson,result_path="./person_images/results"
     for compared in list(zip(time1_origin_frame,time2_origin_frame)):
         count += 1
         vstack = np.vstack((compared[0],compared[1]))
-        cv2.imwrite(os.path.join(result_path,camera_name+datetime_clear()+"_"+str(count)+".jpeg"),vstack)
+        cv2.imwrite(os.path.join(result_path,camera_name+"_"+datetime_clear()+"_"+str(count)+".jpeg"),vstack)
 
     #删除两个时间点的该摄像头的所有图片
     delete_camera_images(camera_name)
