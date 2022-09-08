@@ -4,7 +4,7 @@ import numpy as np
 import json
 from public_logger import logger
 
-def get_source(datatype="rtsp",config_path="./sources.ini",encoding="utf-8")->tuple:
+def get_source(datatype="rtsp",config_path="./conf/sources.ini",encoding="utf-8")->tuple:
     conf = ConfigParser()
     conf.read(config_path, encoding=encoding)
     if datatype == "rtsp":
@@ -13,7 +13,6 @@ def get_source(datatype="rtsp",config_path="./sources.ini",encoding="utf-8")->tu
         return tuple(rtsp_dict.items())
     else:
         pass
-
 
 #获取检测时的那一时刻的一张图片,如果没有成功获取那一时刻的图片，做了3次上限的容错
 def get_one_frame(uri:str)->np.ndarray:

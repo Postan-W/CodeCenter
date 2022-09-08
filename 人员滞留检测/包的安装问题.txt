@@ -1,3 +1,0 @@
-1.安装cython-bbox
-python -m pip install git+https://github.com/yanfengliu/cython_bbox.git
-安装之前确保pip install cython
