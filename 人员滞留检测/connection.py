@@ -4,7 +4,13 @@ import numpy as np
 import json
 from public_logger import logger
 
-def get_source(datatype="rtsp",config_path="./conf/sources.ini",encoding="utf-8")->tuple:
+def get_cuda_number(config_path="./conf/config1.ini"):
+    conf = ConfigParser()
+    conf.read(config_path)
+    cuda_info = dict(conf['CUDA'])
+    return cuda_info['cuda_visible_devices']
+
+def get_source(datatype="rtsp",config_path="./conf/config1.ini",encoding="utf-8")->tuple:
     conf = ConfigParser()
     conf.read(config_path, encoding=encoding)
     if datatype == "rtsp":

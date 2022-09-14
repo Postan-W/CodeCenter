@@ -1,15 +1,22 @@
-import torch
+import os
+from connection import get_cuda_number
+"""
+声明可见(或者说可用)的GPU,比如os.environ['CUDA_VISIBLE_DEVICES'] = ‘1,4,3’即第2,5,4块GPU，那么在程序中使用时编号是从0开始的，相当于列表索引，
+即cuda:0代表使用第2块显卡，cuda:0,1,2代表使用第2,5,4块显卡，以此类推。没有编号，即只有cuda字样代表使用当前显卡。序号写在前面代表优先级高。
+"""
+os.environ['CUDA_VISIBLE_DEVICES'] = get_cuda_number()
 from models import MobileNetV2IFN
 import cv2
 import numpy as np
 from einops import repeat
 from typing import List
 from torchvision import transforms
-
+import torch
 class MatchPerson:
-    def __init__(self,em_ckpt_file,device="cuda:{}".format(",".join([str(i) for i in range(torch.cuda.device_count())]))):
+    def __init__(self,em_ckpt_file):
         # 创建mobilenet模型并加载参数。使用该模型提取特征
-        self.device = torch.device(device)
+        # gpu = "cuda:{}".format(",".join([str(i) for i in list(range(len(os.environ['CUDA_VISIBLE_DEVICES'].split(","))))]))
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
         self.em_model = MobileNetV2IFN()
         self.em_model.load_weights(em_ckpt_file)
         self.em_model = self.em_model.half().to(self.device)

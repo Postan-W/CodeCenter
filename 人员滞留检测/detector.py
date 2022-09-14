@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # 2022/08
+import os
+from connection import get_cuda_number
+os.environ['CUDA_VISIBLE_DEVICES'] = get_cuda_number()
 import torch
 import cv2
 import os
 import numpy as np
-from model_utils.tools import letterbox, non_max_suppression, scale_coords, in_poly_area, plot_one_box, np_to_str, draw_poly_area
+from model_utils.tools import letterbox, non_max_suppression, scale_coords, in_poly_area, plot_one_box
 import random
 from public_logger import logger
 #本类中所有函数的代码都是基于一张图片的推理
 #本类实现了人体检测；是否进入电子围栏的判断；目标人体截取等方法
 class Detector(object):
-    def __init__(self, device=",".join([str(i) for i in range(torch.cuda.device_count())]), model="./weights/yolobest.pt"):
-        self.device = torch.device("cuda:{}".format(device) if torch.cuda.is_available() else 'cpu')
+    def __init__(self,model="./weights/yolobest.pt"):
+        # gpu = "cuda:{}".format(",".join([str(i) for i in list(range(len(os.environ['CUDA_VISIBLE_DEVICES'].split(","))))]))
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
         # 加载检测模型
         self.model = torch.load(model, map_location=self.device)['model'].float()
         self.model.to(self.device).eval()
@@ -19,7 +23,7 @@ class Detector(object):
         if self.half:
             self.model.half()  # to FP16
 
-        self.confthre = 0.6
+        self.confthre = 0.6 
         self.nmsthre = 0.45
         self.img_size = 640
 
@@ -64,9 +68,6 @@ class Detector(object):
                             plot_one_box(xyxy, image_temp, color=(0, 255,0))
                             cv2.imwrite(os.path.join(saved_path,"{}_origin{}_{}.jpeg".format(camera_name,time_point,count)),image_temp)
                             count += 1
-
-
-
 
 #area_point_list = [[[200, 230], [730, 230], [730, 680], [200, 680]]]
 

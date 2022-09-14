@@ -1,4 +1,7 @@
 1.目前是在自己的腾讯云主机上43.138.32.110启动的两个容器，镜像分别为fake_modeltrans和harbor.stress.com:8443/devpre/model-transform。
-fake_modeltrans镜像里面的trans_server.py是空启动容器后，cp本目录下的该文件后运行的
+fake_modeltrans镜像里面的trans_server.py是空启动容器后，cp本目录下的trans_server.py该文件后运行的
 2.应付2022-08-23演示，演示过后可以停掉服务
 3.下载的Pytorch.pth是可以加载使用的，在科学云notebook中代码加载推理。testhb环境wanghongxu/wanghongxu,code中的 8frameworks_test，最后一个block。
+4.因为前端代码里请求本服务接口的ip是固定的，所以每当本服务换机器后，前端代码里要修改机器ip
+-----------------------------
+如果之前的镜像丢失，可以利用本文件夹下的文件打镜像。
