@@ -57,7 +57,7 @@ class Detector(object):
         #虽然写作for循环，实际上只有一张图片的推理结果
         for i, det in enumerate(predictions):
             if len(det):#如果该图片存在检测的目标框
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], image.shape).round()#坐标取整
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], image.shape).round()#坐标缩放回原图并取整
                 for *xyxy, conf, cls in reversed(det):#原始输出按照预测框的conf值从高到低排序，这里是按照conf值从低到高排列
                     if self.names[int(cls)] in self.label:#如果是人，就把ta裁剪出来
                         if in_poly_area(xyxy, area):#采用几何方法判断目标中心点是否在划定区域内

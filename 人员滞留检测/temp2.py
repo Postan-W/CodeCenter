@@ -1,5 +1,8 @@
-import torch
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,2,4'
-print(torch.cuda.device_count())
-print("cuda:{}".format(",".join([str(i) for i in list(range(len(os.environ['CUDA_VISIBLE_DEVICES'].split(","))))])))
+import cv2
+video_cap = cv2.VideoCapture("./videos/1.mp4")
+count = 0
+while video_cap.isOpened():
+    ret,frame = video_cap.read()
+    count += 1
+    if count%64 == 0:
+        cv2.imwrite("./videos/sample{}.jpeg".format(count),frame)

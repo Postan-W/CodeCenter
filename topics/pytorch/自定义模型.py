@@ -1,6 +1,4 @@
-import torch
-from torchsummary import summary
-import numpy as np
+
 # # 下面是加载完整模型结构
 # model = torch.load("./models/densenet169-b2777c0a.pth",map_location=torch.device('cpu'))
 # # print(torch.cuda.is_available())
@@ -41,23 +39,23 @@ class Generator(nn.Module):
 
 
 def save_entiremodel():
-    netG = Generator(3, 3).model
+    netG = Generator(3, 3)
     input = torch.zeros(10, 3, 256, 256)
     output = netG(input)
     print("保存前的输出：", output)
-    torch.save(netG, './models/netG.pth')
-save_entiremodel()
+    torch.save({"model":netG}, './models/netG.pth')
+# save_entiremodel()
 def load_entiremodel(path):
-    netC = torch.load(path)
-    # input = torch.zeros(10, 3, 256, 256)
-    # output = netC(input)
-    # print("保存后的输出:", output)
-    try:
-        print(netC.state_dict())
-    except Exception as e:
-        print(e)
-    print(netC)
-load_entiremodel('./models/netG.pth')
+    netC = torch.load(path)['model']
+    input = torch.zeros(10, 3, 256, 256)
+    output = netC(input)
+    print("保存后的输出:", output)
+    # try:
+    #     print(netC.state_dict())
+    # except Exception as e:
+    #     print(e)
+    # print(netC)
+# load_entiremodel('./models/netG.pth')
 
 def save_parameter_only():
     netG = Generator(3, 3)
