@@ -40,8 +40,9 @@ class Detector(object):
         img = img.half() if self.half else img.float()#uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
         img = img.unsqueeze(0) #在0轴处插入一维，即batch维
-        pred = self.model(img, augment=False)[0]#推理
-        pred = non_max_suppression(pred, self.confthre, self.nmsthre, classes=None, agnostic=False)#NMS筛选框
+        pred = self.model(img, augment=False)[0]#推理。只取了第一张图片的推理结果，也是唯一一张。
+        # print("===={}=====".format(pred.shape))#一张图片的预测结果的形状为(1,n,l)1是固定写法，n是框的个数，l是一个框内的数值个数，包括4个坐标，一个conf,以及x个类别概率
+        pred = non_max_suppression(pred, self.confthre, self.nmsthre, classes=None, agnostic=False)#NMS筛选框，pred的形状为(1,n,6)
         return pred, img
 
     def crop_the_person_out(self,image,area,camera_name,time_point,saved_path="./person_images/detections/"):
@@ -54,8 +55,7 @@ class Detector(object):
         '''
         predictions,img = self.inference(image)
         count = 0
-        #虽然写作for循环，实际上只有一张图片的推理结果
-        for i, det in enumerate(predictions):
+        for i, det in enumerate(predictions):#predictions->(1,n,6)
             if len(det):#如果该图片存在检测的目标框
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], image.shape).round()#坐标缩放回原图并取整
                 for *xyxy, conf, cls in reversed(det):#原始输出按照预测框的conf值从高到低排序，这里是按照conf值从低到高排列
