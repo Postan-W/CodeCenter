@@ -66,7 +66,7 @@ def build_index():
     index_params = {
         "metric_type": "L2",
         "index_type": "IVF_FLAT",
-        "params": {"nlist": 1024}
+        "params": {"nlist": 1024}#nlist聚类时总的分桶数
     }
     # 只能为vector field建立索引
     collection.create_index(
