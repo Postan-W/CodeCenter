@@ -6,5 +6,5 @@ def hano(a,b,c,n):
         hano(a,c,b,n-1)
         hano(a,b,c,1)
         hano(b,a,c,n-1)
-#3个碟子很容易想到怎么移动，可以测试一下
+
 hano('a','b','c',3)

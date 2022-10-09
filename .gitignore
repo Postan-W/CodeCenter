@@ -28,3 +28,4 @@ topics/temp/*
 python_basis/zipfile_theme/models/*
 python_basis/glob的使用/sub/*
 python_basis/glob的使用/*.txt
+python_basis/pandas_theme/case1/*
