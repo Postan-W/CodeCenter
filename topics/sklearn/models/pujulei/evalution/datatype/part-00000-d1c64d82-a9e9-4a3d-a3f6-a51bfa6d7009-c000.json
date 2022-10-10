@@ -1,0 +1,1 @@
+{"dataSetId":"evalution","fieldDefs":[{"typeClassName":"java.math.BigDecimal","ord":"0","code":"轮廓系数silhouette_score","sparkType":"double","displayName":"轮廓系数silhouette_score","name":"轮廓系数silhouette_score"}],"previewFlag":"false"}

@@ -1,0 +1,1 @@
+{"dataSetId":"time","fieldDefs":[{"typeClassName":"string","ord":"0","code":"fit_start","sparkType":"timestamp","displayName":"fit_start","name":"fit_start"},{"typeClassName":"string","ord":"1","code":"fit_end","sparkType":"timestamp","displayName":"fit_end","name":"fit_end"}],"previewFlag":"false"}

@@ -5,7 +5,7 @@ from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import StringIndexer,IndexToString,VectorAssembler
 from pyspark.ml import Pipeline,PipelineModel
 
-origin_rdd = sc.textFile("file:///C:\\Users\\15216\\Desktop\\项目\\PracticeHub\\spark\\sparkML\\iris.txt")
+origin_rdd = sc.textFile("file:///C:/Users/15216/Desktop/projects/CodeCenter/spark/sparkML/iris.txt")
 all_lines = origin_rdd.collect()
 header = all_lines[0].split(",")#文件的每一行都被保存在Row对象的value属性里面。这里获取表头
 print(header)
@@ -38,10 +38,11 @@ def generate_model():
     print("intercept:", lr_model.interceptVector)
     print("类别数:{}；特征数:{}".format(lr_model.numClasses, lr_model.numFeatures))
     print("保存模型")
-    pipeline_model.save("file:///C:\\Users\\15216\\Desktop\\项目\\PracticeHub\\spark\\sparkML\\logisticClassification")
+    pipeline_model.save("file:///C:/Users/15216/Desktop/projects/CodeCenter/spark/sparkML/logisticClassification")
 
 def load_model():
-    model = PipelineModel.load("file:///C:\\Users\\15216\\Desktop\\项目\\PracticeHub\\spark\\sparkML\\logisticClassification")
+    #pipelinemodel加载模型会从指定文件夹下读取metadata等
+    model = PipelineModel.load("file:///C:/Users/15216/Desktop/projects/CodeCenter/spark/sparkML/logisticClassification")
     model.transform(data).select("prediction","targetIndexed","target").show(10,truncate=False)
 
 load_model()

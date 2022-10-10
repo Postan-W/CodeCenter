@@ -7,6 +7,7 @@ iris = datasets.load_iris()
 X, y = iris.data, iris.target
 clf.fit(X, y)
 
+#使用spark读取
 #方法一，使用dumps和loads,但没有存入磁盘
 # s = pickle.dumps(clf)
 # clf2 = pickle.loads(s)
